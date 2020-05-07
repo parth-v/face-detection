@@ -1,6 +1,10 @@
 .App {
 	text-align:center;
-	
+}
+
+.center {
+	display : flex;
+	text-align: center;
 }
 
 .particles {
@@ -11,3 +15,5 @@
 	bottom: 0;
 	right: 0;
 }
+
+

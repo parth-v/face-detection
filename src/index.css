@@ -7,11 +7,6 @@ body {
 
 }
 
-.center {
-	display : flex;
-	text-align: center;
-}
-
 button {
 	cursor: pointer;
 }
