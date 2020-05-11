@@ -14,14 +14,14 @@ const particlesConfig = {
 	    value: 50,
 	    density: {
 	      enable: true,
-	      value_area: 800
+	      value_area: 600
 	    }
 	  }
 	}
 }
 
 const app = new Clarifai.App({
- apiKey: '1af9641b4694479fb7dbd55b7e27da'
+ apiKey: 'Key'
 });
 
 class App extends React.Component {
@@ -30,8 +30,26 @@ class App extends React.Component {
 		super();
 		this.state = {
 			input : '',
-			imageUrl: ''
+			imageUrl: '',
+			box : {}
 		} 
+	}
+
+	calcFaceLocation = (data) => {
+		const bound_box = data.outputs[0].data.regions[0].region_info.bounding_box;
+		const inputimg = document.getElementById("inputimage");
+		const width = Number(inputimg.width);
+		const height = Number(inputimg.height);
+		return {
+			topRow : bound_box.top_row * height,
+			bottomRow : height - (height * bound_box.bottom_row),
+			leftCol : width * bound_box.left_col ,
+			rightCol : width -(width * bound_box.right_col)
+		}
+	}
+
+	displayBoundBox = (box) => {
+		this.setState({box: box});
 	}
 
 	onInputChange = (event) => {
@@ -40,15 +58,9 @@ class App extends React.Component {
 
 	onButtonSubmit = () => {
 		this.setState({imageUrl: this.state.input});
-		app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input).then(
-	    function(response) {
-	      // do something with response
-	      console.log(response.outputs[0].data.regions[0].region_info.bounding_box);
-	    },
-	    function(err) {
-	      // there was an error
-	    }
-	  );
+		app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+		.then( response => this.displayBoundBox(this.calcFaceLocation(response)))
+		.catch( err => console.log(err));
 	}
 
   render() {
@@ -61,8 +73,11 @@ class App extends React.Component {
 	  		<Navigation />
 	  	  <Logo />
 	  	  <Rank />
-	  		<SearchBar onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit}/>
-	  		<FaceDetection imageUrl={this.state.imageUrl}/>
+	  		<SearchBar 
+	  			onInputChange={this.onInputChange} 
+	  			onButtonSubmit={this.onButtonSubmit}
+	  		/>
+	  		<FaceDetection box = {this.state.box} imageUrl={this.state.imageUrl}/>
 	  	</div>
 	  );
 	}
