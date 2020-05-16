@@ -25,7 +25,7 @@ const particlesConfig = {
 const initialState = {
 	input : '',
 	imageUrl: '',
-	box : {},
+	boxes : [],
 	route : 'signin',
 	isSignedIn : false,
 	user : {
@@ -54,20 +54,22 @@ class App extends React.Component {
 	}
 
 	calcFaceLocation = (data) => {
-		const bound_box = data.outputs[0].data.regions[0].region_info.bounding_box;
 		const inputimg = document.getElementById("inputimage");
 		const width = Number(inputimg.width);
 		const height = Number(inputimg.height);
-		return {
-			topRow : bound_box.top_row * height,
-			bottomRow : height - (height * bound_box.bottom_row),
-			leftCol : width * bound_box.left_col ,
-			rightCol : width - (width * bound_box.right_col)
-		}
+		return data.outputs[0].data.regions.map(region => {
+			const bound_box = region.region_info.bounding_box;
+			return {
+				topRow : bound_box.top_row * height,
+				bottomRow : height - (height * bound_box.bottom_row),
+				leftCol : width * bound_box.left_col ,
+				rightCol : width - (width * bound_box.right_col)
+			}
+		})
 	}
 
-	displayBoundBox = (box) => {
-		this.setState({box: box});
+	displayBoundBox = (boxes) => {
+		this.setState({boxes: boxes});
 	}
 
 	onInputChange = (event) => {
@@ -114,7 +116,7 @@ class App extends React.Component {
 	}
 
   render() {
-  	const { isSignedIn, box, imageUrl, route, user } = this.state;
+  	const { isSignedIn, boxes, imageUrl, route, user } = this.state;
 	  return (
 	  	<div className='App'>
 	  		<Particles 
@@ -131,7 +133,7 @@ class App extends React.Component {
 				  			onInputChange={this.onInputChange} 
 				  			onImageSubmit={this.onImageSubmit}
 				  		/>
-				  		<FaceDetection box = {box} imageUrl={imageUrl}/>
+				  		<FaceDetection boxes = {boxes} imageUrl={imageUrl}/>
 		  			</div>	
 		  		: (
 		  			(route === 'signin' || route === 'signout')
