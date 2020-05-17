@@ -78,7 +78,7 @@ class App extends React.Component {
 
 	onImageSubmit = () => {
 		this.setState({imageUrl: this.state.input});
-		fetch('http://localhost:3001/imageapi',{
+		fetch('https://vast-journey-36129.herokuapp.com/imageapi',{
 			method: 'post',
 			headers: {'Content-Type' : 'application/json'},
 			body: JSON.stringify({
@@ -88,7 +88,7 @@ class App extends React.Component {
 		.then( response => response.json())
 		.then( response => {
 			if(response) {
-				fetch('http://localhost:3001/image',{
+				fetch('https://vast-journey-36129.herokuapp.com/image',{
 					method: 'put',
 					headers: {'Content-Type' : 'application/json'},
 					body: JSON.stringify({
