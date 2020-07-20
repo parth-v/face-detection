@@ -1,12 +1,24 @@
 .Tilt {
   background: linear-gradient(89deg, #FF5DEF 0%, #04C8DE 100%);	
-
 }
 
 .cont {
+	margin-left: 1rem;
 	display :grid;
 	grid-template-columns: 1fr auto 1fr;
 	align-content: center;
+}
+
+@media only screen and (max-width: 480px) {
+  .cont {
+    width: 100%;
+    margin-left: 0;
+    grid-template-columns: 1fr;
+    justify-content: center; 
+  }
+  .logo {
+  	justify-self: center;
+  }
 }
 
 .head {
