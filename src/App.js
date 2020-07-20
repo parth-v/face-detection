@@ -77,6 +77,10 @@ class App extends React.Component {
 	}
 
 	onImageSubmit = () => {
+		if(this.state.input.trim() === "")
+		{
+			return;
+		}
 		this.setState({imageUrl: this.state.input});
 		fetch('https://vast-journey-36129.herokuapp.com/imageapi',{
 			method: 'post',
@@ -102,6 +106,7 @@ class App extends React.Component {
 				.catch(console.log);
 			}
 			this.displayBoundBox(this.calcFaceLocation(response));
+			this.setState({input: ''});
 		})
 		.catch( err => console.log(err));
 	}
@@ -116,7 +121,7 @@ class App extends React.Component {
 	}
 
   render() {
-  	const { isSignedIn, boxes, imageUrl, route, user } = this.state;
+  	const { isSignedIn, boxes, imageUrl, route, user, input } = this.state;
 	  return (
 	  	<div className='App'>
 	  		<Particles 
@@ -130,6 +135,7 @@ class App extends React.Component {
 				  	  <Logo />
 				  	  <Rank name={ user.name } entries= { user.entries }/>
 				  		<SearchBar 
+				  			initialInput={input}
 				  			onInputChange={this.onInputChange} 
 				  			onImageSubmit={this.onImageSubmit}
 				  		/>

@@ -1,7 +1,7 @@
 import React from 'react';
 import './SearchBar.css';
 
-const SearchBar = ({ onInputChange, onImageSubmit }) => {
+const SearchBar = ({ initialInput,onInputChange, onImageSubmit }) => {
 	return(
 		<div>
 			<p className="f3 b">
@@ -10,8 +10,9 @@ const SearchBar = ({ onInputChange, onImageSubmit }) => {
 			<div className="center">
 				<div className="form center pa3 br3 shadow-5 ">
 					<input 
+						value={initialInput}
 					  onChange={onInputChange}
-						className="f4 pa2 w-70 " 
+						className="f4 pa2 w-70" 
 						type="text" 
 					/>
 					<button 
