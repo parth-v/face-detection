@@ -38,7 +38,7 @@ class SignIn extends React.Component{
 	render () {
 		const { onRouteChange } = this.props;
 		return(
-			<article className="br3 shadow-5 ba b--black-10 mv4 mw6 center">
+			<article className="br3 shadow-5 ba b--black-10 mv4 w-90 mw6 center">
 				<main className="pa4 black-80">
 				  <div className="measure">
 				    <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
