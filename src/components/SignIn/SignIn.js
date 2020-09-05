@@ -1,11 +1,15 @@
 import React from 'react';
 
+const validEmailRegex = 
+  RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i);
+
 class SignIn extends React.Component{
 	constructor(props){
 		super(props);
 		this.state={
 			signInEmail : '',
-			signInPassword : ''
+			signInPassword : '',
+			errMessage: ''
 		}
 	}
 
@@ -18,6 +22,12 @@ class SignIn extends React.Component{
 	}
 
 	onClickSubmit = () => {
+		const {signInEmail, signInPassword} = this.state;
+		if(!signInPassword || !signInEmail || !validEmailRegex.test(signInEmail))
+		{
+			this.setState({ errMessage: 'Invalid Request!'});
+			return;
+		}
 		fetch('https://vast-journey-36129.herokuapp.com/signin',{
 			method: 'post',
 			headers: {'Content-Type' : 'application/json'},
@@ -32,7 +42,11 @@ class SignIn extends React.Component{
 				this.props.loadUser(user);
 				this.props.onRouteChange('home');
 			}
+			else {
+				throw new Error();
+			}
 		})
+		.catch( err => this.setState({ errMessage: 'Invalid Request!'}))
 	}
 
 	render () {
@@ -64,7 +78,7 @@ class SignIn extends React.Component{
 				        />
 				      </div>
 				    </fieldset>
-				    <div className="">
+				    <div>
 				      <input 
 				      	onClick = {this.onClickSubmit}
 				      	className="b ph3 pv2 input-reset ba1 b--black bg-transparent grow pointer f6 dib" 
@@ -76,7 +90,15 @@ class SignIn extends React.Component{
 				      <p onClick={()=> onRouteChange('register')} className="f6 link dim black db pointer">Register</p>
 				    </div>
 				  </div>
+				  {	
+						this.state.errMessage 
+						? <div style={{ color: 'red' }}>
+								{this.state.errMessage}
+						  </div> 
+						: null
+					}
 				</main>
+					
 			</article>
 		);
 	}

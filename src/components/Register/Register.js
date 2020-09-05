@@ -1,5 +1,8 @@
 import React from 'react';
 
+const validEmailRegex = 
+  RegExp(/^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i);
+
 class Register extends React.Component{
 
 	constructor(props){
@@ -7,7 +10,8 @@ class Register extends React.Component{
 		this.state = {
 			email : '',
 			password : '',
-			name : ''
+			name : '',
+			errMessage: ''
 		}
 	}
 
@@ -24,13 +28,19 @@ class Register extends React.Component{
 	}
 
 	onClickSubmit = () => {
+		const {email, password, name} = this.state;
+		if(!email || !password || !name || !validEmailRegex.test(email))
+		{
+			this.setState({ errMessage: 'Invalid Request!'});
+			return;
+		}
 		fetch('https://vast-journey-36129.herokuapp.com/register',{
 			method: 'post',
 			headers: {'Content-Type' : 'application/json'},
 			body: JSON.stringify({
-				email : this.state.email,
-				password : this.state.password,
-				name : this.state.name
+				email : email,
+				password : password,
+				name : name
 			})
 		})
 		.then(response => response.json())
@@ -38,8 +48,11 @@ class Register extends React.Component{
 			if(user.id){
 				this.props.loadUser(user);
 				this.props.onRouteChange('home')
+			} else {
+				throw new Error();
 			}
 		})
+		.catch( err => this.setState({ errMessage: 'Invalid Request!'}))
 	}
 	render() {
 		return(
@@ -88,6 +101,13 @@ class Register extends React.Component{
 				      />
 				    </div>
 				  </div>
+				  {	
+						this.state.errMessage 
+						? <div style={{ color: 'red', marginTop: '10px' }}>
+								{this.state.errMessage}
+						  </div> 
+						: null
+					}
 				</main>
 			</article>
 		);
